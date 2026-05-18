@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools >= 75.0",  "setuptools_scm[toml]>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+authors = [
+    {name = "The Board of Trustees of the Leland Stanford Junior University, through SLAC National Accelerator Laboratory"},
+    {name = "Matt Gibbs"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "pyepics",
+]
+description = "Tools to support high level application development at LCLS using Python"
+dynamic = ["version"]
+name = "slac-db"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+include = ["edef*"]
