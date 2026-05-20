@@ -16,6 +16,11 @@ _SYSTEM = EventDefinitionSystemPVs()
 class EventDefinition(Buffer):
     """CU linac eDef buffer."""
 
+    BEAMCODE_MAP = {
+        "CU_HXR": 1,
+        "CU_SXR": 2,
+    }
+
     beamcode: int
     inclusion_masks: Optional[list] = None
     exclusion_masks: Optional[list] = None
