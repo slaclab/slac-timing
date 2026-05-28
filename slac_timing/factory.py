@@ -21,7 +21,7 @@ def create_buffer(
             user=user,
             n_measurements=n_measurements,
             n_avg=n_avg,
-            beamcode=BEAMCODE_MAP[beampath],
+            beamcode=EventDefinition.BEAMCODE_MAP[beampath],
         )
 
     if beampath.startswith("SC_"):
