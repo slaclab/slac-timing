@@ -1,4 +1,5 @@
 import epics
+import gc
 import pytest
 from slicops import unit_util
 import sys
@@ -11,13 +12,15 @@ def reset_event_definition(request):
         with unit_util.start_ioc(ioc_file.args[0], db_yaml="db.yaml"):
             epics.ca.initialize_libca()
             yield
+            sys.modules.pop("slac_timing.event_definition", None)
             epics.ca.finalize_libca()
-
+            gc.collect()
     else:
         epics.ca.initialize_libca()
         yield
+        sys.modules.pop("slac_timing.event_definition", None)
         epics.ca.finalize_libca()
-    sys.modules.pop("slac_timing.event_definition", None)
+        gc.collect()
 
 
 @pytest.mark.ioc_yaml("fail_config_pvs.yaml")
