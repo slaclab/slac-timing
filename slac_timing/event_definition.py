@@ -43,7 +43,7 @@ class EventDefinition(Buffer):
         return self
 
     def _reserve(self) -> int:
-        if not _SYSTEM.reserve_name.put(self.name, wait=True):
+        if _SYSTEM.reserve_name.put(self.name, wait=True) is None:
             raise ReservationError(
                 f"Could not reach edef system pv={_SYSTEM.reserve_name.pvname}"
             )
@@ -52,7 +52,7 @@ class EventDefinition(Buffer):
         while elapsed < _RESERVE_TIMEOUT_S:
             for num in range(1, _NUM_EDEF_SLOTS + 1):
                 edef_name = _SYSTEM.slot_names[num].get(as_string=True)
-                if not edef_name:
+                if edef_name is None:
                     raise ReservationError(
                         f"Could not reach edef system pv={_SYSTEM.slot_names[num].pvname}"
                     )
