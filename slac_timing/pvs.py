@@ -39,6 +39,11 @@ class IndexedPVGroup:
         """Batch-read all PVs in this group via epics.caget_many."""
         return epics.caget_many(self.pvnames, **kwargs)
 
+    def disconnect(self):
+        for pv in self._pvs.values():
+            pv.disconnect()
+        self._pvs.clear()
+
 
 # --- System PV Containers (reservation protocol) ---
 
@@ -76,6 +81,13 @@ class BufferPVs:
         self.ctrl = LazyPV(f"{prefix}:CTRL")
         self.free = LazyPV(f"{prefix}:FREE")
         self.cnt = LazyPV(f"{prefix}:CNT")
+
+    def disconnect(self):
+        for attr in vars(self).values():
+            if isinstance(attr, LazyPV):
+                attr.disconnect()
+            elif isinstance(attr, IndexedPVGroup):
+                attr.disconnect()
 
 
 class BSABufferPVs(BufferPVs):
