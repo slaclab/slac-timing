@@ -77,6 +77,7 @@ class Buffer(BaseModel, ABC):
     def _clear_ca_cache(self) -> None:
         """Remove caget-created channels for this buffer from the CA cache."""
         import epics.ca
+        from epics.pv import _PVcache_
 
         ctx = epics.ca.current_context()
         if ctx is None:
@@ -87,12 +88,14 @@ class Buffer(BaseModel, ABC):
         suffix = f"HST{self.number}"
         stale = [name for name in context_cache if name.endswith(suffix)]
         for name in stale:
-            entry = context_cache.get(name)
-            if entry is not None and getattr(entry, "chid", None) is not None:
-                try:
-                    epics.ca.clear_channel(entry.chid)
-                except BaseException:
-                    context_cache.pop(name, None)
+            for form in ("time", "ctrl", "native"):
+                pvid = (name, form, ctx)
+                pv_obj = _PVcache_.pop(pvid, None)
+                if pv_obj is not None:
+                    try:
+                        pv_obj.disconnect()
+                    except BaseException:
+                        pass
 
     def is_reserved(self) -> bool:
         return self.number is not None and self.number != 0
