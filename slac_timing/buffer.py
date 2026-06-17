@@ -1,3 +1,4 @@
+import gc
 import time as _time
 from abc import ABC, abstractmethod
 from typing import Optional
@@ -66,6 +67,13 @@ class Buffer(BaseModel, ABC):
     def release(self) -> None:
         """Release the buffer back to the system."""
         ...
+
+    def _disconnect_pvs(self) -> None:
+        """Disconnect all PV connections held by this buffer."""
+        if self._pvs is not None:
+            self._pvs.disconnect()
+            self._pvs = None
+            gc.collect()  # Force garbage collection to clean up PVs
 
     def is_reserved(self) -> bool:
         return self.number is not None and self.number != 0
