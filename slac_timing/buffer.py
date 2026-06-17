@@ -87,12 +87,12 @@ class Buffer(BaseModel, ABC):
         suffix = f"HST{self.number}"
         stale = [name for name in context_cache if name.endswith(suffix)]
         for name in stale:
-            entry = context_cache.pop(name, None)
-            if entry is not None and entry.chid is not None:
+            entry = context_cache.get(name)
+            if entry is not None and getattr(entry, "chid", None) is not None:
                 try:
                     epics.ca.clear_channel(entry.chid)
-                except Exception:
-                    pass
+                except BaseException:
+                    context_cache.pop(name, None)
 
     def is_reserved(self) -> bool:
         return self.number is not None and self.number != 0
