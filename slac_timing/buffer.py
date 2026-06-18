@@ -253,7 +253,7 @@ class Buffer(BaseModel, ABC):
                 results[pv] = data
         return results
 
-def _clear_ca_cache(self) -> None:
+    def _clear_ca_cache(self) -> None:
         """Remove caget-created channels for this buffer from the CA cache."""
         ctx = epics.ca.current_context()
         if ctx is None:
