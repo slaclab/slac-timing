@@ -269,10 +269,7 @@ class Buffer(BaseModel, ABC):
             for pvid in stale_pvids:
                 pv_obj = _PVcache_.pop(pvid, None)
                 if pv_obj is not None:
-                    try:
-                        pv_obj.disconnect()
-                    except BaseException:
-                        pass
+                    pv_obj.disconnect()
 
         def clear_context_cache():
             context_cache = epics.ca._cache.get(ctx)
@@ -282,10 +279,8 @@ class Buffer(BaseModel, ABC):
             for name in stale_names:
                 entry = context_cache.get(name)
                 if entry is not None and getattr(entry, "chid", None) is not None:
-                    try:
-                        epics.ca.clear_channel(entry.chid)
-                    except BaseException:
-                        context_cache.pop(name, None)
+                    epics.ca.clear_channel(entry.chid)
+                    context_cache.pop(name, None)
 
         clear_pv_object_cache()
         clear_context_cache()
